@@ -53,9 +53,7 @@ const translations = {
   }
 };
 
-export default function Home() {
-  const [theme, setTheme] = useState('light');
-  const [language, setLanguage] = useState('en');
+export default function Home({ theme, setTheme, language, setLanguage }) {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -83,7 +81,7 @@ export default function Home() {
             {theme === 'light' ? <Moon className="w-6 h-6 text-gray-500" /> : <Sun className="w-6 h-6 text-yellow-500" />}
           </button>
           <button className="language-toggle" onClick={toggleLanguage}>
-            <img src={language === 'en' ? BrazilFlag : USFlag} alt="Language Flag" className="w-6 h-6" />
+            {language === 'en' ? <img src={BrazilFlag} alt="Portuguese" className="w-6 h-6" /> : <img src={USFlag} alt="English" className="w-6 h-6" />}
           </button>
           <button 
             onClick={() => navigate('/auth')} 

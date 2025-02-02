@@ -2,19 +2,48 @@ import React from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 
-export default function Auth() {
+const translations = {
+  en: {
+    createAccount: 'Create your account',
+    signIn: 'Sign in to your account',
+    fullName: 'Full Name',
+    email: 'Email address',
+    password: 'Password',
+    signUp: 'Sign Up',
+    signInButton: 'Sign In',
+    alreadyHaveAccount: 'Already have an account? Sign in',
+    dontHaveAccount: "Don't have an account? Sign up",
+    signInWithGoogle: 'Sign in with Google',
+  },
+  pt: {
+    createAccount: 'Crie sua conta',
+    signIn: 'Entre na sua conta',
+    fullName: 'Nome Completo',
+    email: 'Endereço de Email',
+    password: 'Senha',
+    signUp: 'Inscrever-se',
+    signInButton: 'Entrar',
+    alreadyHaveAccount: 'Já tem uma conta? Entre',
+    dontHaveAccount: 'Não tem uma conta? Inscreva-se',
+    signInWithGoogle: 'Entrar com Google',
+  },
+};
+
+export default function Auth({ theme, language }) {
   const [searchParams] = useSearchParams();
   const [isSignUp, setIsSignUp] = React.useState(searchParams.get('signup') === 'true');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [fullName, setFullName] = React.useState('');
   const navigate = useNavigate();
-  const { signIn, signUp, error, clearError } = useAuthStore();
+  const { signIn, signUp, signInWithGoogle, error, clearError } = useAuthStore();
 
   React.useEffect(() => {
-    // Clear any previous errors when component mounts or auth mode changes
+    document.body.className = theme;
     clearError();
-  }, [isSignUp, clearError]);
+  }, [isSignUp, clearError, theme]);
+
+  const t = translations[language];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,11 +61,21 @@ export default function Auth() {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+      navigate('/editor');
+    } catch (err) {
+      // Error is already handled in the store
+      console.error(err);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className={`min-h-screen ${theme === 'light' ? 'bg-gray-50' : 'bg-gray-900 text-gray-100'} flex flex-col justify-center py-12 sm:px-6 lg:px-8`}>
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          {isSignUp ? 'Create your account' : 'Sign in to your account'}
+        <h2 className="mt-6 text-center text-3xl font-extrabold">
+          {isSignUp ? t.createAccount : t.signIn}
         </h2>
         {!import.meta.env.VITE_SUPABASE_URL && (
           <div className="mt-2 text-center text-sm text-amber-600 bg-amber-50 p-2 rounded">
@@ -51,7 +90,7 @@ export default function Auth() {
             {isSignUp && (
               <div>
                 <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
-                  Full Name
+                  {t.fullName}
                 </label>
                 <input
                   id="fullName"
@@ -66,7 +105,7 @@ export default function Auth() {
             
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
+                {t.email}
               </label>
               <input
                 id="email"
@@ -80,7 +119,7 @@ export default function Auth() {
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
+                {t.password}
               </label>
               <input
                 id="password"
@@ -101,7 +140,7 @@ export default function Auth() {
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               disabled={!import.meta.env.VITE_SUPABASE_URL}
             >
-              {isSignUp ? 'Sign Up' : 'Sign In'}
+              {isSignUp ? t.signUp : t.signInButton}
             </button>
           </form>
 
@@ -110,9 +149,16 @@ export default function Auth() {
               onClick={() => setIsSignUp(!isSignUp)}
               className="w-full text-center text-sm text-indigo-600 hover:text-indigo-500"
             >
-              {isSignUp
-                ? 'Already have an account? Sign in'
-                : "Don't have an account? Sign up"}
+              {isSignUp ? t.alreadyHaveAccount : t.dontHaveAccount}
+            </button>
+          </div>
+
+          <div className="mt-6">
+            <button
+              onClick={handleGoogleSignIn}
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            >
+              {t.signInWithGoogle}
             </button>
           </div>
         </div>
