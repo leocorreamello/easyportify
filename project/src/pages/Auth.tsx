@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 
@@ -14,6 +14,8 @@ const translations = {
     alreadyHaveAccount: 'Already have an account? Sign in',
     dontHaveAccount: "Don't have an account? Sign up",
     signInWithGoogle: 'Sign in with Google',
+    successMessage: 'Account created successfully! Redirecting to login...',
+    fetchError: 'Failed to connect to the server. Please try again later.',
   },
   pt: {
     createAccount: 'Crie sua conta',
@@ -26,15 +28,19 @@ const translations = {
     alreadyHaveAccount: 'Já tem uma conta? Entre',
     dontHaveAccount: 'Não tem uma conta? Inscreva-se',
     signInWithGoogle: 'Entrar com Google',
+    successMessage: 'Conta criada com sucesso! Redirecionando para login...',
+    fetchError: 'Falha ao conectar ao servidor. Por favor, tente novamente mais tarde.',
   },
 };
 
 export default function Auth({ theme, language }) {
   const [searchParams] = useSearchParams();
-  const [isSignUp, setIsSignUp] = React.useState(searchParams.get('signup') === 'true');
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [fullName, setFullName] = React.useState('');
+  const [isSignUp, setIsSignUp] = useState(searchParams.get('signup') === 'true');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [fetchError, setFetchError] = useState('');
   const navigate = useNavigate();
   const { signIn, signUp, signInWithGoogle, error, clearError } = useAuthStore();
 
@@ -51,23 +57,35 @@ export default function Auth({ theme, language }) {
     try {
       if (isSignUp) {
         await signUp(email, password, fullName);
+        localStorage.setItem('user', JSON.stringify({ email, fullName }));
+        setSuccessMessage(t.successMessage);
+        setTimeout(() => {
+          setIsSignUp(false);
+          setSuccessMessage('');
+        }, 2000);
       } else {
         await signIn(email, password);
+        navigate(`/portfolio/${email}`);
       }
-      navigate('/editor');
     } catch (err) {
-      // Error is already handled in the store
-      console.error(err);
+      if (err.message === 'Failed to fetch') {
+        setFetchError(t.fetchError);
+      } else {
+        console.error(err);
+      }
     }
   };
 
   const handleGoogleSignIn = async () => {
     try {
       await signInWithGoogle();
-      navigate('/editor');
+      navigate(`/portfolio/${email}`);
     } catch (err) {
-      // Error is already handled in the store
-      console.error(err);
+      if (err.message === 'Failed to fetch') {
+        setFetchError(t.fetchError);
+      } else {
+        console.error(err);
+      }
     }
   };
 
@@ -85,11 +103,11 @@ export default function Auth({ theme, language }) {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+        <div className={`py-8 px-4 shadow sm:rounded-lg sm:px-10 ${theme === 'light' ? 'bg-white' : 'bg-gray-800'}`}>
           <form className="space-y-6" onSubmit={handleSubmit}>
             {isSignUp && (
               <div>
-                <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="fullName" className="block text-sm font-medium">
                   {t.fullName}
                 </label>
                 <input
@@ -98,13 +116,13 @@ export default function Auth({ theme, language }) {
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  className={`mt-1 block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 ${theme === 'light' ? 'border-gray-300' : 'border-gray-700 bg-gray-700 text-gray-100'}`}
                 />
               </div>
             )}
             
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="email" className="block text-sm font-medium">
                 {t.email}
               </label>
               <input
@@ -113,12 +131,12 @@ export default function Auth({ theme, language }) {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                className={`mt-1 block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 ${theme === 'light' ? 'border-gray-300' : 'border-gray-700 bg-gray-700 text-gray-100'}`}
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="password" className="block text-sm font-medium">
                 {t.password}
               </label>
               <input
@@ -127,7 +145,7 @@ export default function Auth({ theme, language }) {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                className={`mt-1 block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 ${theme === 'light' ? 'border-gray-300' : 'border-gray-700 bg-gray-700 text-gray-100'}`}
               />
             </div>
 
@@ -135,10 +153,17 @@ export default function Auth({ theme, language }) {
               <div className="text-red-600 text-sm bg-red-50 p-2 rounded">{error}</div>
             )}
 
+            {fetchError && (
+              <div className="text-red-600 text-sm bg-red-50 p-2 rounded">{fetchError}</div>
+            )}
+
+            {successMessage && (
+              <div className="text-green-600 text-sm bg-green-50 p-2 rounded">{successMessage}</div>
+            )}
+
             <button
               type="submit"
               className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              disabled={!import.meta.env.VITE_SUPABASE_URL}
             >
               {isSignUp ? t.signUp : t.signInButton}
             </button>

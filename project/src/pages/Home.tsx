@@ -26,7 +26,8 @@ const translations = {
     readyToCreateDesc: "Start building your professional portfolio today and showcase your work to the world.",
     createPortfolio: "Get Started",
     login: "Login",
-    signUpButton: "Sign Up"
+    signUpButton: "Sign Up",
+    viewPortfolio: "View Portfolio"
   },
   pt: {
     title: "Crie seu Portfólio Profissional em Minutos",
@@ -49,7 +50,8 @@ const translations = {
     readyToCreateDesc: "Comece a construir seu portfólio profissional hoje e mostre seu trabalho para o mundo.",
     createPortfolio: "Comece Agora",
     login: "Entrar",
-    signUpButton: "Inscreva-se"
+    signUpButton: "Inscreva-se",
+    viewPortfolio: "Ver Portfólio"
   }
 };
 
@@ -89,6 +91,12 @@ export default function Home({ theme, setTheme, language, setLanguage }) {
           >
             {t.createPortfolio}
           </button>
+          <button 
+            onClick={() => navigate('/portfolio/test@example.com')} 
+            className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
+          >
+            {t.viewPortfolio}
+          </button>
         </div>
       </nav>
 
@@ -101,7 +109,7 @@ export default function Home({ theme, setTheme, language, setLanguage }) {
             {t.description}
           </p>
           <Link
-            to="/auth?signup=true"
+            to="/auth?signin=true"
             className="inline-block bg-indigo-600 text-white text-lg px-8 py-4 rounded-lg hover:bg-indigo-700 transition transform hover:scale-105"
           >
             {t.getStarted}
@@ -176,7 +184,7 @@ export default function Home({ theme, setTheme, language, setLanguage }) {
             {t.readyToCreateDesc}
           </p>
           <Link
-            to="/auth?signup=true"
+            to="/auth?signin=true"
             className="inline-block bg-indigo-600 text-white text-lg px-8 py-4 rounded-lg hover:bg-indigo-700 transition transform hover:scale-105"
           >
             {t.createPortfolio}
