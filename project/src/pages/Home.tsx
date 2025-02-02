@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Palette, Rocket, Users, Sun, Moon } from 'lucide-react';
 import BrazilFlag from '../../favicon/brazil.png';
 import USFlag from '../../favicon/eua.png';
@@ -24,7 +24,7 @@ const translations = {
     publishDesc: "Publish your portfolio and share it with the world to showcase your work.",
     readyToCreate: "Ready to Create Your Portfolio?",
     readyToCreateDesc: "Start building your professional portfolio today and showcase your work to the world.",
-    createPortfolio: "Create Your Portfolio Now",
+    createPortfolio: "Get Started",
     login: "Login",
     signUpButton: "Sign Up"
   },
@@ -47,7 +47,7 @@ const translations = {
     publishDesc: "Publique seu portfólio e compartilhe-o com o mundo para mostrar seu trabalho.",
     readyToCreate: "Pronto para Criar Seu Portfólio?",
     readyToCreateDesc: "Comece a construir seu portfólio profissional hoje e mostre seu trabalho para o mundo.",
-    createPortfolio: "Crie Seu Portfólio Agora",
+    createPortfolio: "Comece Agora",
     login: "Entrar",
     signUpButton: "Inscreva-se"
   }
@@ -56,6 +56,7 @@ const translations = {
 export default function Home() {
   const [theme, setTheme] = useState('light');
   const [language, setLanguage] = useState('en');
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.body.className = theme;
@@ -84,15 +85,12 @@ export default function Home() {
           <button className="language-toggle" onClick={toggleLanguage}>
             <img src={language === 'en' ? BrazilFlag : USFlag} alt="Language Flag" className="w-6 h-6" />
           </button>
-          <div className="space-x-4 ml-4">
-            <Link to="/auth" className="text-gray-600 hover:text-gray-900">{t.login}</Link>
-            <Link 
-              to="/auth?signup=true" 
-              className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
-            >
-              {t.signUpButton}
-            </Link>
-          </div>
+          <button 
+            onClick={() => navigate('/auth')} 
+            className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
+          >
+            {t.createPortfolio}
+          </button>
         </div>
       </nav>
 
@@ -187,7 +185,7 @@ export default function Home() {
           </Link>
         </section>
       </main>
-      <footer className="bg-gray-800 text-white py-4">
+      <footer className={`${theme === 'light' ? 'bg-gray-200 text-gray-900' : 'bg-gray-800 text-white'} py-4`}>
         <div className="container mx-auto px-6">
           <div className="flex justify-between items-center">
             <div>
@@ -195,13 +193,13 @@ export default function Home() {
               <p className="mt-1 text-sm">Create your professional portfolio with ease.</p>
             </div>
             <div className="space-x-4">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white text-sm">
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-900">
                 Facebook
               </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white text-sm">
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-900">
                 Twitter
               </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white text-sm">
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-900">
                 LinkedIn
               </a>
             </div>
@@ -209,7 +207,7 @@ export default function Home() {
           <div className="mt-4 text-center">
             <p className="text-gray-400 text-sm">Your portfolio is your digital handshake.</p>
             <p className="mt-2 text-gray-400 text-sm">
-              <a href="/terms" className="hover:text-white">Terms of Service</a> | <a href="/privacy" className="hover:text-white">Privacy Policy</a>
+              <a href="/terms" className="hover:text-gray-900">Terms of Service</a> | <a href="/privacy" className="hover:text-gray-900">Privacy Policy</a>
             </p>
             <p className="mt-2 text-gray-400 text-sm">&copy; 2025 EasyPortify. All rights reserved.</p>
           </div>
