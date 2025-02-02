@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Editor from './pages/Editor';
@@ -8,6 +8,8 @@ import { useAuthStore } from './store/authStore';
 
 function App() {
   const { initialize } = useAuthStore();
+  const [theme, setTheme] = useState('light');
+  const [language, setLanguage] = useState('en');
 
   React.useEffect(() => {
     initialize();
@@ -15,9 +17,9 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white">
+      <div className={`min-h-screen bg-gradient-to-br from-indigo-50 to-white ${theme}`}>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home theme={theme} setTheme={setTheme} language={language} setLanguage={setLanguage} />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/editor" element={<Editor />} />
           <Route path="/:username/:slug" element={<Portfolio />} />
