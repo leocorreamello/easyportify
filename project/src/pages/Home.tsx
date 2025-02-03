@@ -26,7 +26,14 @@ const translations = {
     readyToCreateDesc: "Start building your professional portfolio today and showcase your work to the world.",
     createPortfolio: "Get Started",
     login: "Login",
-    signUpButton: "Sign Up"
+    signUpButton: "Sign Up",
+    viewPortfolio: "View Portfolio",
+    footerTitle: 'EasyPortify',
+    footerDescription: 'Create your professional portfolio with ease.',
+    footerNote: 'Your portfolio is your digital handshake.',
+    termsOfService: 'Terms of Service',
+    privacyPolicy: 'Privacy Policy',
+    footerRights: '&copy; 2025 EasyPortify. All rights reserved.',
   },
   pt: {
     title: "Crie seu Portfólio Profissional em Minutos",
@@ -49,13 +56,18 @@ const translations = {
     readyToCreateDesc: "Comece a construir seu portfólio profissional hoje e mostre seu trabalho para o mundo.",
     createPortfolio: "Comece Agora",
     login: "Entrar",
-    signUpButton: "Inscreva-se"
+    signUpButton: "Inscreva-se",
+    viewPortfolio: "Ver Portfólio",
+    footerTitle: 'EasyPortify',
+    footerDescription: 'Crie seu portfólio profissional com facilidade.',
+    footerNote: 'Seu portfólio é seu aperto de mão digital.',
+    termsOfService: 'Termos de Serviço',
+    privacyPolicy: 'Política de Privacidade',
+    footerRights: '&copy; 2025 EasyPortify. Todos os direitos reservados.',
   }
 };
 
-export default function Home() {
-  const [theme, setTheme] = useState('light');
-  const [language, setLanguage] = useState('en');
+export default function Home({ theme, setTheme, language, setLanguage }) {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -75,7 +87,7 @@ export default function Home() {
   const t = translations[language];
 
   return (
-    <div className={`min-h-screen ${theme === 'light' ? 'bg-gradient-to-br from-indigo-50 to-white' : 'bg-gradient-to-br from-gray-900 to-gray-800 text-gray-100'}`}>
+    <div className={`min-h-screen ${theme === 'light' ? 'bg-gradient-to-br from-indigo-50 to-white' : 'bg-gradient-to-br from-gray-800 to-gray-900 text-gray-100'}`}>
       <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
         <div className="text-2xl font-bold text-indigo-600">EasyPortify</div>
         <div className="space-x-4 flex items-center">
@@ -83,13 +95,19 @@ export default function Home() {
             {theme === 'light' ? <Moon className="w-6 h-6 text-gray-500" /> : <Sun className="w-6 h-6 text-yellow-500" />}
           </button>
           <button className="language-toggle" onClick={toggleLanguage}>
-            <img src={language === 'en' ? BrazilFlag : USFlag} alt="Language Flag" className="w-6 h-6" />
+            {language === 'en' ? <img src={BrazilFlag} alt="Portuguese" className="w-6 h-6" /> : <img src={USFlag} alt="English" className="w-6 h-6" />}
           </button>
           <button 
             onClick={() => navigate('/auth')} 
             className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
           >
             {t.createPortfolio}
+          </button>
+          <button 
+            onClick={() => navigate('/portfolio/test@example.com')} 
+            className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
+          >
+            {t.viewPortfolio}
           </button>
         </div>
       </nav>
@@ -103,7 +121,7 @@ export default function Home() {
             {t.description}
           </p>
           <Link
-            to="/auth?signup=true"
+            to="/auth?signin=true"
             className="inline-block bg-indigo-600 text-white text-lg px-8 py-4 rounded-lg hover:bg-indigo-700 transition transform hover:scale-105"
           >
             {t.getStarted}
@@ -178,7 +196,7 @@ export default function Home() {
             {t.readyToCreateDesc}
           </p>
           <Link
-            to="/auth?signup=true"
+            to="/auth?signin=true"
             className="inline-block bg-indigo-600 text-white text-lg px-8 py-4 rounded-lg hover:bg-indigo-700 transition transform hover:scale-105"
           >
             {t.createPortfolio}
@@ -189,27 +207,27 @@ export default function Home() {
         <div className="container mx-auto px-6">
           <div className="flex justify-between items-center">
             <div>
-              <h2 className="text-xl font-bold">EasyPortify</h2>
-              <p className="mt-1 text-sm">Create your professional portfolio with ease.</p>
+              <h2 className="text-xl font-bold">{t.footerTitle}</h2>
+              <p className="mt-1 text-sm">{t.footerDescription}</p>
             </div>
             <div className="space-x-4">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-900">
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-100">
                 Facebook
               </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-900">
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-100">
                 Twitter
               </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-900">
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-100">
                 LinkedIn
               </a>
             </div>
           </div>
           <div className="mt-4 text-center">
-            <p className="text-gray-400 text-sm">Your portfolio is your digital handshake.</p>
+            <p className="text-gray-400 text-sm">{t.footerNote}</p>
             <p className="mt-2 text-gray-400 text-sm">
-              <a href="/terms" className="hover:text-gray-900">Terms of Service</a> | <a href="/privacy" className="hover:text-gray-900">Privacy Policy</a>
+              <a href="/terms" className="hover:text-gray-100">{t.termsOfService}</a> | <a href="/privacy" className="hover:text-gray-100">{t.privacyPolicy}</a>
             </p>
-            <p className="mt-2 text-gray-400 text-sm">&copy; 2025 EasyPortify. All rights reserved.</p>
+            <p className="mt-2 text-gray-400 text-sm" dangerouslySetInnerHTML={{ __html: t.footerRights }}></p>
           </div>
         </div>
       </footer>
