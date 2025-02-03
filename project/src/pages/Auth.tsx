@@ -13,7 +13,6 @@ const translations = {
     signInButton: 'Sign In',
     alreadyHaveAccount: 'Already have an account? Sign in',
     dontHaveAccount: "Don't have an account? Sign up",
-    signInWithGoogle: 'Sign in with Google',
     successMessage: 'Account created successfully! Redirecting to login...',
     fetchError: 'Failed to connect to the server. Please try again later.',
   },
@@ -27,7 +26,6 @@ const translations = {
     signInButton: 'Entrar',
     alreadyHaveAccount: 'Já tem uma conta? Entre',
     dontHaveAccount: 'Não tem uma conta? Inscreva-se',
-    signInWithGoogle: 'Entrar com Google',
     successMessage: 'Conta criada com sucesso! Redirecionando para login...',
     fetchError: 'Falha ao conectar ao servidor. Por favor, tente novamente mais tarde.',
   },
@@ -42,7 +40,7 @@ export default function Auth({ theme, language }) {
   const [successMessage, setSuccessMessage] = useState('');
   const [fetchError, setFetchError] = useState('');
   const navigate = useNavigate();
-  const { signIn, signUp, signInWithGoogle, error, clearError } = useAuthStore();
+  const { signIn, signUp, error, clearError } = useAuthStore();
 
   React.useEffect(() => {
     document.body.className = theme;
@@ -57,7 +55,6 @@ export default function Auth({ theme, language }) {
     try {
       if (isSignUp) {
         await signUp(email, password, fullName);
-        localStorage.setItem('user', JSON.stringify({ email, fullName }));
         setSuccessMessage(t.successMessage);
         setTimeout(() => {
           setIsSignUp(false);
@@ -68,24 +65,7 @@ export default function Auth({ theme, language }) {
         navigate(`/portfolio/${email}`);
       }
     } catch (err) {
-      if (err.message === 'Failed to fetch') {
-        setFetchError(t.fetchError);
-      } else {
-        console.error(err);
-      }
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    try {
-      await signInWithGoogle();
-      navigate(`/portfolio/${email}`);
-    } catch (err) {
-      if (err.message === 'Failed to fetch') {
-        setFetchError(t.fetchError);
-      } else {
-        console.error(err);
-      }
+      setFetchError(t.fetchError);
     }
   };
 
@@ -95,11 +75,6 @@ export default function Auth({ theme, language }) {
         <h2 className="mt-6 text-center text-3xl font-extrabold">
           {isSignUp ? t.createAccount : t.signIn}
         </h2>
-        {!import.meta.env.VITE_SUPABASE_URL && (
-          <div className="mt-2 text-center text-sm text-amber-600 bg-amber-50 p-2 rounded">
-            Please connect to Supabase using the "Connect to Supabase" button in the top right corner.
-          </div>
-        )}
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -175,15 +150,6 @@ export default function Auth({ theme, language }) {
               className="w-full text-center text-sm text-indigo-600 hover:text-indigo-500"
             >
               {isSignUp ? t.alreadyHaveAccount : t.dontHaveAccount}
-            </button>
-          </div>
-
-          <div className="mt-6">
-            <button
-              onClick={handleGoogleSignIn}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-            >
-              {t.signInWithGoogle}
             </button>
           </div>
         </div>

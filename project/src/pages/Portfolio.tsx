@@ -133,8 +133,9 @@ export default function Portfolio({ theme, setTheme, language, setLanguage }) {
   };
 
   const handleUseTemplate = () => {
-    // Logic to use the selected template
-    console.log('Using template:', selectedTemplate);
+    if (selectedTemplate) {
+      navigate(`/editor/${selectedTemplate.id}`);
+    }
   };
 
   const handleClosePrompt = () => {

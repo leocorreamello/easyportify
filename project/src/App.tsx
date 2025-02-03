@@ -18,6 +18,7 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem('theme', theme);
+    document.body.className = theme === 'light' ? 'bg-gradient-to-br from-indigo-50 to-white' : 'bg-gradient-to-br from-gray-800 to-gray-900 text-gray-100';
   }, [theme]);
 
   useEffect(() => {
@@ -26,11 +27,11 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className={`min-h-screen bg-gradient-to-br from-indigo-50 to-white ${theme}`}>
+      <div className={`min-h-screen ${theme === 'light' ? 'bg-gradient-to-br from-indigo-50 to-white' : 'bg-gradient-to-br from-gray-800 to-gray-900 text-gray-100'}`}>
         <Routes>
           <Route path="/" element={<Home theme={theme} setTheme={setTheme} language={language} setLanguage={setLanguage} />} />
           <Route path="/auth" element={<Auth theme={theme} language={language} />} />
-          <Route path="/editor" element={<Editor />} />
+          <Route path="/editor/:templateId" element={<Editor />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/portfolio/:email" element={<Portfolio theme={theme} setTheme={setTheme} language={language} setLanguage={setLanguage} />} />
         </Routes>

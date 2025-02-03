@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { supabase } from '../lib/supabase';
 
 interface User {
   id: string;
@@ -13,9 +12,8 @@ interface AuthState {
   error: string | null;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, fullName: string) => Promise<void>;
-  signInWithGoogle: () => Promise<void>;
-  signOut: () => Promise<void>;
-  initialize: () => Promise<void>;
+  signOut: () => void;
+  initialize: () => void;
   clearError: () => void;
 }
 
@@ -25,82 +23,34 @@ export const useAuthStore = create<AuthState>((set) => ({
   error: null,
   signIn: async (email, password) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      if (error) throw error;
-      set({ error: null });
+      const storedUser = JSON.parse(localStorage.getItem('user') || 'null');
+      if (storedUser && storedUser.email === email && storedUser.password === password) {
+        set({ user: storedUser, error: null });
+      } else {
+        throw new Error('Invalid email or password');
+      }
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to sign in' });
+      set({ error: error.message });
       throw error;
     }
   },
   signUp: async (email, password, fullName) => {
     try {
-      const { error: signUpError, data } = await supabase.auth.signUp({
-        email,
-        password,
-      });
-      if (signUpError) throw signUpError;
-
-      if (data.user) {
-        const { error: profileError } = await supabase
-          .from('users')
-          .insert([{ id: data.user.id, email, full_name: fullName }]);
-        
-        if (profileError) throw profileError;
-      }
-      set({ error: null });
-    } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to sign up' });
-      throw error;
-    }
-  },
-  /*Login com o Google*/
-  signInWithGoogle: async () => {
-    try {
-      const { error, user } = await supabase.auth.signIn({ provider: 'google' });
-      if (error) throw error;
+      const user = { id: '1', email, full_name: fullName, password };
+      localStorage.setItem('user', JSON.stringify(user));
       set({ user, error: null });
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to sign in with Google' });
+      set({ error: 'Failed to sign up' });
       throw error;
     }
   },
-  signOut: async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      set({ user: null, error: null });
-    } catch (error) {
-      set({ error: error instanceof Error ? error.message : 'Failed to sign out' });
-      throw error;
-    }
+  signOut: () => {
+    localStorage.removeItem('user');
+    set({ user: null, error: null });
   },
-  initialize: async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (session?.user) {
-        const { data, error } = await supabase
-          .from('users')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-
-        if (error) throw error;
-        set({ user: data, loading: false, error: null });
-      } else {
-        set({ user: null, loading: false, error: null });
-      }
-    } catch (error) {
-      set({ 
-        user: null, 
-        loading: false, 
-        error: error instanceof Error ? error.message : 'Failed to initialize auth'
-      });
-    }
+  initialize: () => {
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    set({ user, loading: false, error: null });
   },
   clearError: () => set({ error: null }),
 }));
