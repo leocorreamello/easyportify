@@ -175,7 +175,7 @@ export default function Portfolio({ theme, setTheme, language, setLanguage }) {
   };
 
   return (
-    <div className={`min-h-screen ${theme === 'light' ? 'bg-gradient-to-br from-indigo-100 to-gray-50' : 'bg-gradient-to-br from-gray-900 to-black text-gray-100'}`}>
+    <div className={`min-h-screen ${theme === 'light' ? 'bg-gradient-to-br from-indigo-50 to-white' : 'bg-gradient-to-br from-gray-800 to-gray-900 text-gray-100'}`}>
       <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
         <div className="text-2xl font-bold text-indigo-600">EasyPortify</div>
         <div className="space-x-4 flex items-center">
@@ -243,11 +243,11 @@ export default function Portfolio({ theme, setTheme, language, setLanguage }) {
           </h1>
         </div>
 
-        <section className={`mt-24 p-8 rounded-lg shadow-lg ${theme === 'light' ? 'bg-gray-200' : 'bg-gray-800'}`}>
+        <section className={`mt-24 p-8 rounded-lg shadow-lg ${theme === 'light' ? 'bg-white' : 'bg-gray-700'}`}>
           <h1 className="text-5xl font-bold mb-6 text-center">{t.templates}</h1>
           <div className="grid md:grid-cols-3 gap-8">
             {templates.map((template) => (
-              <div key={template.id} className={`relative group p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow ${theme === 'light' ? 'bg-white' : 'bg-gray-700'}`}>
+              <div key={template.id} className={`relative group p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow ${theme === 'light' ? 'bg-gray-200' : 'bg-gray-800'}`}>
                 <img
                   src={template.image}
                   alt={template.name}
@@ -261,11 +261,11 @@ export default function Portfolio({ theme, setTheme, language, setLanguage }) {
           </div>
         </section>
 
-        <section className={`mt-24 p-8 rounded-lg shadow-lg ${theme === 'light' ? 'bg-gray-200' : 'bg-gray-800'}`}>
+        <section className={`mt-24 p-8 rounded-lg shadow-lg ${theme === 'light' ? 'bg-white' : 'bg-gray-700'}`}>
           <h1 className="text-5xl font-bold mb-6 text-center">{t.premiumTemplates}</h1>
           <div className="grid md:grid-cols-3 gap-8">
             {premiumTemplates.map((template) => (
-              <div key={template.id} className={`relative group p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow ${theme === 'light' ? 'bg-white' : 'bg-gray-700'}`}>
+              <div key={template.id} className={`relative group p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow ${theme === 'light' ? 'bg-gray-200' : 'bg-gray-800'}`}>
                 <img
                   src={template.image}
                   alt={template.name}
