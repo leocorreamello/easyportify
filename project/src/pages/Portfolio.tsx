@@ -151,7 +151,7 @@ export default function Portfolio({ theme, setTheme, language, setLanguage }) {
   };
 
   const handleLogout = async () => {
-    // Logic to handle logout
+          // Logic to handle logout
     localStorage.removeItem('user');
     navigate('/auth');
   };
